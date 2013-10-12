@@ -6,88 +6,86 @@ package ua.edu.sumdu.ta.alexandersudarenko.pr3;
 public class Task {
     
     /**
-     * Переменная для храниния имени задачи
+     * Variable to store the name of the task
      */
     private String title;
     
     /**
-     * Переменная для храниния состояния задачи
+     * Variable to store the state the task
      */
     private boolean active;
 
     /**
-     * Переменная для храниния времени задачи или времени начала для повторяущейся задачи
+     * Variable to store the time of the task or the start time for the recurring task
      */    
     private int time;
     
     /**
-     * Переменная для храниния времени окончания повторяющейся задачи
+     * Variable to hold the end of a recurring task
      */    
     private int end;
     
     /**
-     * Переменная для храниния периода повторения
+     * Variable to store the return period
      */    
     private int repeat;
     
     /**
-     * Создание неповторяющейся задачи 
+     * Creating a recurring the task
      *
-     * @param title Имя задачи
-     * @param time Время оповещения
+     * @param title Name of the task
+     * @param time time alerts
      */    
     public Task(String title, int time) {
-        this.title = title;
-        this.time = time;
-        this.active = false;
+        this.setTitle(title);
+        this.setTime(time);
+        this.setActive(false);
     }
 
     /**
-     * Создание повторяющейся задачи 
+     * Creating a recurring task
      *
-     * @param title Имя задачи
-     * @param start Время первого оповещения
-     * @param end Время последнего оповещения
-     * @param repeat Период повторения оповещения
+     * @param title Name of the task
+     * @param start Time of first alert
+     * @param end The last time the alert
+     * @param repeat The repetition period of alert
      */    
     public Task(String title, int start, int end, int repeat) {
-        this.title = title;
-        this.time = start;
-        this.end = end; 
-        this.repeat = repeat; 
-        this.active = false;
+        this.setTitle(title);
+        this.setTime(start, end, repeat);
+        this.setActive(false);
     }
 
     /**
-     * @return Возврашает название задачи
+     * @return Returns the name of the task
      */     
     public String getTitle() {
         return this.title;
     }
 
     /**
-     * @param title Изменяет название задачи
+     * @param title Changes the name of the task
      */     
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * @return Возврашает активность задачи
+     * @return Returns the active the task
      */      
     public boolean isActive() {
         return this.active;
     }
 
     /**
-     * @param active Изменяет состояние задачи
+     * @param active Changes the status of a task
      */       
     public void setActive(boolean active) {
         this.active = active;
     }
 
     /**
-     * @param time Изменяет время оповещения
+     * @param time Changes the alarm time
      */     
     public void setTime(int time) {
         this.time = time;
@@ -96,9 +94,9 @@ public class Task {
     }
 
     /**
-     * @param start Изменяет время первого оповещения
-     * @param end Изменяет время последнего оповещения
-     * @param repeat Изменяет период повторения оповещения
+     * @param start Changes the time of the first alert
+     * @param end Changes the time of the last alert
+     * @param repeat Changes the repeat period alert
      */     
     public void setTime(int start, int end, int repeat) {
         this.time = start;
@@ -107,21 +105,21 @@ public class Task {
     }
 
     /**
-     * @return Возврашает время первого или единственного оповещения
+     * @return Returns the time the first and only alert
      */      
     public int getTime() {
         return this.time;
     }
 
     /**
-     * @return Возврашает время первого или единственного оповещения
+     * @return Returns the time the first and only alert
      */      
     public int getStartTime() {
         return this.time;
     }
 
     /**
-     * @return Возврашает время последнего или единственного оповещения
+     * @return Returns the time of the last or only alert
      */      
     public int getEndTime() {
         if (this.repeat == 0) {
@@ -132,7 +130,7 @@ public class Task {
     }
 
     /**
-     * @return Возврашает период повторения оповещения
+     * @return Returns the repetition period of alert
      */      
     public int getRepeatInterval() {
         if (this.repeat == 0) {
@@ -143,7 +141,7 @@ public class Task {
     }
 
     /**
-     * @return true - событие повторяется, false - нет
+     * @return true - event repeats, false - no
      */      
     public boolean isRepeated() {
         if (this.repeat == 0) {
@@ -154,7 +152,7 @@ public class Task {
     }
 
     /**
-     * @return Возвращает полное название задачи
+     * @return Returns the full name of the task
      */      
     public String toString() {
         if (this.repeat == 0) {
@@ -166,7 +164,7 @@ public class Task {
     }
     
     /**
-     * @return Возвращающий время следующего оповещения, после указанного времени
+     * @return Returns the next time the alert after a specified time
      */ 
     public int nextTimeAfter(int time) {
         if (this.active) {

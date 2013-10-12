@@ -4,30 +4,38 @@ package ua.edu.sumdu.ta.alexandersudarenko.pr3;
  * abstract class AbstractTaskList
  */
 abstract class AbstractTaskList {
-    
+
+	protected Task[] arrayList;
+
     /**
-     * Добавление не уникальной задачи, добавление пустой задачи запретить реализацией
+     * Adding not a unique the task
      */
     abstract void add(Task task);
     
     /**
-     * Удаление всех задач равных входной
+     * Delete all tasks equal input
      */
     abstract void remove(Task task);
     
     /**
-     * Возвращает количество задач в списке
+     * Returns the number of tasks in the list.
      */
-    abstract int size();
+    public int size() {
+		int sum = 0;
+		for (int i = 0; i < arrayList.length; i++) {
+			if (arrayList[i] != null) sum++;
+		}
+		return sum;
+	}
     
     /**
-     * Получение задачи по номеру
+     * Getting the task by number.
      */
     abstract Task getTask(int index);
 
     /**
-     * Массив задач из списка, время оповещения которых находится между from (исключительно) и to (включительно)
+     * The array of tasks from the list, alarm time which is between from (exclusive) and to (inclusive).
      */
-    abstract Task[] incoming(int from, int to);
+    //abstract Task[] incoming(int from, int to);
 
 }

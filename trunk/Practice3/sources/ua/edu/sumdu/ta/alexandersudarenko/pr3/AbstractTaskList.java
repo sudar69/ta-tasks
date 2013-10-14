@@ -5,7 +5,7 @@ package ua.edu.sumdu.ta.alexandersudarenko.pr3;
  */
 abstract class AbstractTaskList {
 
-	protected Task[] arrayList;
+    protected Task[] arrayList;
 
     /**
      * Adding not a unique the task
@@ -21,12 +21,12 @@ abstract class AbstractTaskList {
      * Returns the number of tasks in the list.
      */
     public int size() {
-		int sum = 0;
-		for (int i = 0; i < arrayList.length; i++) {
-			if (arrayList[i] != null) sum++;
-		}
-		return sum;
-	}
+        int sum = 0;
+        for (int i = 0; i < arrayList.length; i++) {
+            if (arrayList[i] != null) sum++;
+        }
+        return sum;
+    }
     
     /**
      * Getting the task by number.
@@ -36,6 +36,6 @@ abstract class AbstractTaskList {
     /**
      * The array of tasks from the list, alarm time which is between from (exclusive) and to (inclusive).
      */
-    //abstract Task[] incoming(int from, int to);
+    abstract Task[] incoming(int from, int to);
 
 }

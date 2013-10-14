@@ -1,8 +1,9 @@
 package ua.edu.sumdu.ta.alexandersudarenko.pr3.tests;
 
-import ua.edu.sumdu.ta.alexandersudarenko.pr3.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import ua.edu.sumdu.ta.alexandersudarenko.pr3.Task;
 
-import org.junit.*;
 import static org.junit.Assert.*;
 
 public class TaskTest {

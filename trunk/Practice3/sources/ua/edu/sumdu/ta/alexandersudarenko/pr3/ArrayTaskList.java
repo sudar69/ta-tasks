@@ -1,7 +1,7 @@
 package ua.edu.sumdu.ta.alexandersudarenko.pr3;
 
 /**
- * abstract class ArrayTaskList
+ * class ArrayTaskList
  */
 public class ArrayTaskList extends AbstractTaskList {
     
@@ -30,10 +30,16 @@ public class ArrayTaskList extends AbstractTaskList {
      * @param task a task that will be added to the list.
      */     
     public void add(Task task) {
-        if (task.getTitle() != "") {
-            if (arrayList.length == size()) resizeArrayList();
-            arrayList[size()] = task;
+        boolean unique = true;
+        for (int i = 0; i < size(); i++) {
+            if (arrayList[i].equals(task)) unique = false;
         }
+        if (unique) {
+            if (task.getTitle() != "") {
+                if (arrayList.length == size()) resizeArrayList();
+                arrayList[size()] = task;
+            }
+        }    
     }
 
     /**

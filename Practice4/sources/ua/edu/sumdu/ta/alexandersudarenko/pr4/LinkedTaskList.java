@@ -54,6 +54,7 @@ public class LinkedTaskList extends AbstractTaskList {
     /**
      * @return Return size
      */
+    @Override
     public int size() {
         LinkedTaskList temp = this;
         int i = 0;
@@ -112,6 +113,30 @@ public class LinkedTaskList extends AbstractTaskList {
         return null;
     }
     
-    public Task[] incoming(int from, int to) {return null;}
+    /**
+     * The array of tasks from the list, alarm time which is between from (exclusive) and to (inclusive).
+     */ 
+    public Task[] incoming(int from, int to) {
+        LinkedTaskList temp = this;
+        int tempSize = 0;
+        int i = 0;
+        while (i < size()) {
+            if ((temp.getElement().nextTimeAfter(from) != -1) && 
+              (temp.getElement().nextTimeAfter(from) <= to)) tempSize++;
+            temp = temp.getNext();
+            i++;
+        }
+        Task[] tempArrayList = new Task[tempSize];
+        tempSize = 0;
+        while (i < size()) {
+            if ((temp.getElement().nextTimeAfter(from) != -1) && (temp.getElement().nextTimeAfter(from) <= to)) {
+                tempArrayList[tempSize] = temp.getElement();
+                tempSize++;
+            }    
+            temp = temp.getNext();
+            i++;
+        }        
+        return tempArrayList;
+    }
 
 }

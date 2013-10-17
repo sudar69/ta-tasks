@@ -153,7 +153,8 @@ public class Task {
 
     /**
      * @return Returns the full name of the task
-     */      
+     */   
+    @Override 
     public String toString() {
         if (this.repeat == 0) {
             return "Task \"" + this.title + "\" " + this.active + " at " + this.time;

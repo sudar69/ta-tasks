@@ -12,12 +12,18 @@ public class Main {
         System.out.println("Size LinkedTaskList = " + taskList.size());
         System.out.println("Get Task by number");
         for (int i = 0; i < taskList.size(); i++) System.out.println(taskList.getTask(i));
+        for (int i = 0; i < taskList.size(); i++) {
+            Task temp = taskList.getTask(i);
+            temp.setActive(true);
+        }
         System.out.println("Delete 3 and 9");
         taskList.remove(taskList.getTask(3));
         taskList.remove(taskList.getTask(9));
         System.out.println("Size LinkedTaskList = " + taskList.size());
         System.out.println("View Task");
-        for (int i = 0; i < taskList.size(); i++) System.out.println(taskList.getTask(i));  
+        for (int i = 0; i < taskList.size(); i++) System.out.println(taskList.getTask(i)); 
+        System.out.println("Count Task 5 to 11");
+        System.out.println(taskList.incoming(5, 11).length);
     }
     
 }

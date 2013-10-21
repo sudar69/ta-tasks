@@ -2,7 +2,7 @@ package ua.edu.sumdu.ta.alexandersudarenko.pr4.tests;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import ua.edu.sumdu.ta.alexandersudarenko.pr4.Task;
+import ua.edu.sumdu.ta.alexandersudarenko.pr4.*;
 
 import static org.junit.Assert.*;
 

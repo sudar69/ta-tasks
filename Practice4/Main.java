@@ -24,6 +24,12 @@ public class Main {
         for (int i = 0; i < taskList.size(); i++) System.out.println(taskList.getTask(i)); 
         System.out.println("Count Task 5 to 11");
         System.out.println(taskList.incoming(5, 11).length);
+        
+        Task[] temp = taskList.incoming(5, 11);
+        for (int i = 0; i < temp.length; i++) {
+            System.out.println(temp[i]);
+        }
+
     }
     
 }

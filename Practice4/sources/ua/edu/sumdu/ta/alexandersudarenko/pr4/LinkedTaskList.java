@@ -50,21 +50,7 @@ public class LinkedTaskList extends AbstractTaskList {
     private LinkedTaskList getNext() {
         return this.next;
     }
-        
-    /**
-     * @return Return size
-     */
-    @Override
-    public int size() {
-        LinkedTaskList temp = this;
-        int i = 0;
-        while (temp.getElement()!=null) {
-            temp = temp.getNext();
-            i++;
-        }
-        return i;
-    }
-    
+            
     /**
      * @param task Add new Task
      */    
@@ -77,6 +63,7 @@ public class LinkedTaskList extends AbstractTaskList {
         }
         temp.setElement(task);
         temp.setNext(new LinkedTaskList());
+        size++;
     }
     
     /**
@@ -89,6 +76,7 @@ public class LinkedTaskList extends AbstractTaskList {
             if (temp.getElement().equals(task)) {
                 temp.setElement(temp.getNext().getElement());
                 temp.setNext(temp.getNext().getNext());
+                size--;
             } else {
                 temp = temp.getNext();
                 i++;
@@ -128,6 +116,8 @@ public class LinkedTaskList extends AbstractTaskList {
         }
         Task[] tempArrayList = new Task[tempSize];
         tempSize = 0;
+        temp = this;
+        i = 0;
         while (i < size()) {
             if ((temp.getElement().nextTimeAfter(from) != -1) && (temp.getElement().nextTimeAfter(from) <= to)) {
                 tempArrayList[tempSize] = temp.getElement();

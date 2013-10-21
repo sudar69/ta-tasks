@@ -14,6 +14,8 @@ public class LinkedTaskList extends AbstractTaskList {
      * Variable to next LinkedTaskList
      */
     private LinkedTaskList next;
+    
+    private LinkedTaskList tail;
 
     /**
      * Constructor
@@ -21,6 +23,7 @@ public class LinkedTaskList extends AbstractTaskList {
     public LinkedTaskList() {
         this.element = null;
         this.next = null;
+        this.tail = null;
     }
     
     /**
@@ -36,6 +39,13 @@ public class LinkedTaskList extends AbstractTaskList {
     private void setNext(LinkedTaskList next) {
         this.next = next;
     }     
+    
+    /**
+     * @return Returns Task
+     */
+    private void setTail(LinkedTaskList tail) {
+        this.tail = tail;
+    }     
 
     /**
      * @return Returns Task
@@ -50,20 +60,29 @@ public class LinkedTaskList extends AbstractTaskList {
     private LinkedTaskList getNext() {
         return this.next;
     }
-            
+        
+    /**
+     * @return Return next LinkedTaskList
+     */
+    private LinkedTaskList getTail() {
+        return this.tail;
+    }
+    
     /**
      * @param task Add new Task
      */    
     public void add(Task task) {
-        LinkedTaskList temp = this;
-        int i = 0;
-        while (i < size()) {
-            temp = temp.getNext();
-            i++;
-        }
-        temp.setElement(task);
-        temp.setNext(new LinkedTaskList());
-        size++;
+        if (getTail() == null) {
+            setElement(task);
+            setNext(new LinkedTaskList());
+            setTail(getNext());
+            size++;
+        } else {
+            getTail().setElement(task);
+            getTail().setNext(new LinkedTaskList());
+            setTail(getTail().getNext());
+            size++;
+        }  
     }
     
     /**
@@ -81,7 +100,7 @@ public class LinkedTaskList extends AbstractTaskList {
                 temp = temp.getNext();
                 i++;
             }
-        } 
+        }       
     }
     
     /**

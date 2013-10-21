@@ -5,11 +5,13 @@ package ua.edu.sumdu.ta.alexandersudarenko.pr4;
  */
 public class ArrayTaskList extends AbstractTaskList {
     
+    private Task[] arrayList;
+    
     /**
      * Create the initial array.
      */
     public ArrayTaskList() {
-        this.arrayList = new Task[10];
+        this.arrayList = new Task[10];        
     }
     
     /**
@@ -17,7 +19,7 @@ public class ArrayTaskList extends AbstractTaskList {
      */
     private void resizeArrayList() {
         Task[] tempArrayList;
-        tempArrayList = new Task[size() + size()/3];
+        tempArrayList = new Task[arrayList.length + arrayList.length/3];
         for (int i = 0; i < size(); i++) {
             tempArrayList[i] = arrayList[i];
         }
@@ -33,6 +35,7 @@ public class ArrayTaskList extends AbstractTaskList {
         if (task.getTitle() != "") {
             if (arrayList.length == size()) resizeArrayList();
             arrayList[size()] = task;
+            size++;
         }
     }
 
@@ -43,17 +46,14 @@ public class ArrayTaskList extends AbstractTaskList {
      */       
     public void remove(Task task) {
         if (task.getTitle() != "") {
-            int tempSize = 0;
+            boolean delete = false; 
             for (int i = 0; i < size(); i++) {
                 if (arrayList[i].equals(task)) {
                     arrayList[i] = null;               
-                    tempSize++;
-                }
-                if (i < (size() - tempSize)) {
-                    arrayList[i] = arrayList[i + tempSize];
-                } else {
-                    arrayList[i] = null;
-                }                
+                    delete = true;
+                    size--;
+                }  
+                if (delete) arrayList[i] = arrayList[i + 1];
             }
         }
     }

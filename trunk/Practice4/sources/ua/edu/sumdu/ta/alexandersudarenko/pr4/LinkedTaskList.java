@@ -8,89 +8,33 @@ public class LinkedTaskList extends AbstractTaskList {
     /**
      * Variable to Task
      */
-    private Task element;
-    
-    /**
-     * Variable to next LinkedTaskList
-     */
-    private LinkedTaskList next;
-    
-    private LinkedTaskList tail;
-
-    /**
-     * Constructor
-     */
-    public LinkedTaskList() {
-        this.element = null;
-        this.next = null;
-        this.tail = null;
-    }
-    
-    /**
-     * @param task Set Task
-     */
-    private void setElement(Task task) {
-        this.element = task;
-    } 
-    
-    /**
-     * @param next Set LinkedTaskList
-     */
-    private void setNext(LinkedTaskList next) {
-        this.next = next;
-    }     
-    
-    /**
-     * @return Returns Task
-     */
-    private void setTail(LinkedTaskList tail) {
-        this.tail = tail;
-    }     
-
-    /**
-     * @return Returns Task
-     */
-    private Task getElement() {
-        return this.element;
-    } 
-        
-    /**
-     * @return Return next LinkedTaskList
-     */
-    private LinkedTaskList getNext() {
-        return this.next;
-    }
-        
-    /**
-     * @return Return next LinkedTaskList
-     */
-    private LinkedTaskList getTail() {
-        return this.tail;
-    }
+    private Element element = null;
+    private Element tail = null;
     
     /**
      * @param task Add new Task
      */    
     public void add(Task task) {
-        if (getTail() == null) {
-            setElement(task);
-            setNext(new LinkedTaskList());
-            setTail(getNext());
+        Element temp = new Element();
+        temp.setElement(task);
+        if (size() == 0) {
+            temp.setNext(element);
+            element = temp;
+            tail = temp;
             size++;
         } else {
-            getTail().setElement(task);
-            getTail().setNext(new LinkedTaskList());
-            setTail(getTail().getNext());
+            tail.setNext(temp);
+            tail = temp;
             size++;
-        }  
+        }
     }
     
     /**
      * @param task Remove Task
      */    
     public void remove(Task task) {
-        LinkedTaskList temp = this;
         int i = 0;
+        Element temp = element;
         while (i < size()) {
             if (temp.getElement().equals(task)) {
                 temp.setElement(temp.getNext().getElement());
@@ -100,7 +44,7 @@ public class LinkedTaskList extends AbstractTaskList {
                 temp = temp.getNext();
                 i++;
             }
-        }       
+        }        
     }
     
     /**
@@ -109,11 +53,10 @@ public class LinkedTaskList extends AbstractTaskList {
      */    
     public Task getTask(int index) {
         if (index >= 0 && index < size()) {
-            LinkedTaskList temp = this;
-            int i = 0;
-            while (i < index) {
+            Element temp = element;
+            while (index > 0) {
                 temp = temp.getNext();
-                i++;
+                index--;
             }
             return temp.getElement();
         }
@@ -124,7 +67,7 @@ public class LinkedTaskList extends AbstractTaskList {
      * The array of tasks from the list, alarm time which is between from (exclusive) and to (inclusive).
      */ 
     public Task[] incoming(int from, int to) {
-        LinkedTaskList temp = this;
+        Element temp = element;
         int tempSize = 0;
         int i = 0;
         while (i < size()) {
@@ -135,7 +78,7 @@ public class LinkedTaskList extends AbstractTaskList {
         }
         Task[] tempArrayList = new Task[tempSize];
         tempSize = 0;
-        temp = this;
+        temp = element;
         i = 0;
         while (i < size()) {
             if ((temp.getElement().nextTimeAfter(from) != -1) && (temp.getElement().nextTimeAfter(from) <= to)) {

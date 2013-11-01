@@ -15,18 +15,24 @@ public class LinkedTaskList extends AbstractTaskList {
      * @param task Add new Task
      */    
     public void add(Task task) {
-        Element temp = new Element();
-        temp.setElement(task);
-        if (size() == 0) {
-            temp.setNext(element);
-            element = temp;
-            tail = temp;
-            size++;
-        } else {
-            tail.setNext(temp);
-            tail = temp;
-            size++;
+		boolean unique = true;
+        for (int i = 0; i < size(); i++) {
+            if (getTask(i).equals(task)) unique = false;
         }
+        if (unique) {
+			Element temp = new Element();
+			temp.setElement(task);
+			if (size() == 0) {
+				temp.setNext(element);
+				element = temp;
+				tail = temp;
+				size++;
+			} else {
+				tail.setNext(temp);
+				tail = temp;
+				size++;
+			}
+		}
     }
     
     /**
@@ -92,7 +98,7 @@ public class LinkedTaskList extends AbstractTaskList {
     }
 
     
-    public class Element {
+    private class Element {
         private Element next = null;
         private Task element = null;
 

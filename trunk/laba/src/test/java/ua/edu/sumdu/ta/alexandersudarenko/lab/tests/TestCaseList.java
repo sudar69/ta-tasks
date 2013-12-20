@@ -40,6 +40,21 @@ public class TestCaseList {
         }
     }
     
+    public void setStartDate(String name, String date) {
+        ListMessage listMessage = list.get(name);
+        listMessage.setStartDate(date);
+    }
+    
+    public void setFinishDate(String name, String date) {
+        ListMessage listMessage = list.get(name);
+        listMessage.setFinishDate(date);
+    }
+    
+    public void setErrorDescription(String name, String date) {
+        ListMessage listMessage = list.get(name);
+        listMessage.setErrorDescription(date);
+    }
+    
     public int size() {
         return list.size();
     }

@@ -2,7 +2,8 @@ package ua.edu.sumdu.ta.alexandersudarenko.lab.tests;
 
 import java.io.File;
 import java.io.IOException;
- 
+
+import java.util.Set;
 import java.util.List; 
 import java.util.Map;
 import java.util.HashMap;
@@ -69,32 +70,30 @@ public class WebSiteTest {
       public TestWatcher testWatcher = new TestWatcher() {
 
         protected void succeeded(Description description) {
-            System.out.println("" + description.getDisplayName() + " succeeded ");
             super.succeeded(description);
         }
       
         @Override
         protected void failed(Throwable e, Description description) {
-          System.out.println("" + description.getDisplayName() + " failed " + e.getMessage());
+          testCaseList.setErrorDescription(description.getDisplayName(), e.getMessage());
           super.failed(e, description);
         }
         
         @Override
         protected void starting(Description description) {
-            
             //Start TestCase
             ListMessage listMessage = new ListMessage();
             testCaseList.add(description.getDisplayName(), listMessage);
+            testCaseList.setStartDate(description.getDisplayName(), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
             TestCaseAssert.setListMessage(listMessage);
             
-            System.out.println("starting" + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
-              format(Calendar.getInstance().getTime()));
             super.starting(description);
         }
         
         @Override
         protected void finished(Description description) {
-            System.out.println("finished");
+            testCaseList.setFinishDate(description.getDisplayName(), new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
+            
             super.finished(description);
         }
       };
@@ -104,7 +103,7 @@ public class WebSiteTest {
     public void navigationRegisterPageTest() {   
         Navigation navigation = new Navigation(driver);
         navigation.setNavigation(new String[] {"Register"});
-        TestCaseAssert.assertEquals("Registration", driver.getTitle());        
+        TestCaseAssert.assertEquals("Navigation to 'Registration' page", "Registration", driver.getTitle());        
     }
 
     //Test ID 2
@@ -112,11 +111,11 @@ public class WebSiteTest {
     public void emptyFieldsRegisterTest() {
         Navigation navigation = new Navigation(driver);
         navigation.setNavigation(new String[] {"Register"});
-        TestCaseAssert.assertEquals("Registration", driver.getTitle());
+        assertEquals("Registration", driver.getTitle());
         driver.findElement(By.name("registerForm:j_idt27")).click();
-        TestCaseAssert.assertEquals(4, driver.findElements(By.cssSelector(".error")).size());        
+        TestCaseAssert.assertEquals("Popytka registracii s pustymi poljami", 4, driver.findElements(By.cssSelector(".error")).size());        
     }    
-/*    
+
     //Test ID 3
     @Test
     public void validationRegisterFormTest() {
@@ -125,39 +124,39 @@ public class WebSiteTest {
         assertEquals("Registration", driver.getTitle());
         
         OperationForm operationForm = new OperationForm(driver);    
-        assertTrue(operationForm.validInput("registerForm", "registerForm:username", "Alexander2"));
-        //assertFalse(operationForm.validInput("registerForm", "registerForm:username", "Alexander"));
-        //assertFalse(operationForm.validInput("registerForm", "registerForm:username", "11111111"));
-        //assertFalse(operationForm.validInput("registerForm", "registerForm:username", "a1"));
+        TestCaseAssert.assertTrue("validation username Alexander2", operationForm.validInput("registerForm", "registerForm:username", "Alexander2"));
+        TestCaseAssert.assertFalse("validation username Alexander", operationForm.validInput("registerForm", "registerForm:username", "Alexander"));
+        TestCaseAssert.assertFalse("validation username 11111111", operationForm.validInput("registerForm", "registerForm:username", "11111111"));
+        TestCaseAssert.assertFalse("validation username a1", operationForm.validInput("registerForm", "registerForm:username", "a1"));
 
         
-        assertTrue(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertTrue("validation password/confirmPassword Alexander_1 Alexander_1", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"Alexander_1", "Alexander_1"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword Alexander_1 Alexander_2", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"Alexander_1", "Alexander_2"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword alex alex", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"alex", "alex"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword Alexander_ Alexander_", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"Alexander_", "Alexander_"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword ALEXABDER_1 ALEXABDER_1", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"ALEXABDER_1", "ALEXABDER_1"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword alexander_1 alexander_1", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"alexander_1", "alexander_1"}));
-        assertFalse(operationForm.validInput("registerForm", 
+        TestCaseAssert.assertFalse("validation password/confirmPassword Alexander1 Alexander1", operationForm.validInput("registerForm", 
           new String[] {"registerForm:password", "registerForm:confirmPassword"}, 
           new String[] {"Alexander1", "Alexander1"}));       
 
-        assertTrue(operationForm.validInput("registerForm", "registerForm:email", "alexander@nc.com"));
-        assertFalse(operationForm.validInput("registerForm", "registerForm:email", "alexandernc.com"));
-        assertFalse(operationForm.validInput("registerForm", "registerForm:email", "alexander@@nc.com"));
-        assertFalse(operationForm.validInput("registerForm", "registerForm:email", "alexander@nc"));
-        assertFalse(operationForm.validInput("registerForm", "registerForm:email", "alexander@nc.COM"));
+        TestCaseAssert.assertTrue("validation email alexander@nc.com", operationForm.validInput("registerForm", "registerForm:email", "alexander@nc.com"));
+        TestCaseAssert.assertFalse("validation email alexandernc.com", operationForm.validInput("registerForm", "registerForm:email", "alexandernc.com"));
+        TestCaseAssert.assertFalse("validation email alexander@@nc.com", operationForm.validInput("registerForm", "registerForm:email", "alexander@@nc.com"));
+        TestCaseAssert.assertFalse("validation email alexander@nc", operationForm.validInput("registerForm", "registerForm:email", "alexander@nc"));
+        TestCaseAssert.assertFalse("validation email alexander@nc.COM", operationForm.validInput("registerForm", "registerForm:email", "alexander@nc.COM"));
     }
 
     //Test ID 4
@@ -178,7 +177,7 @@ public class WebSiteTest {
           new String[] {reportDate, "Alexander_1", "Alexander_1", "alexander@nc.com"});
         driver.findElement(By.name("registerForm:j_idt27")).click();
         
-        assertEquals(1, driver.findElements(By.xpath("//div[@class=\"justRegisteredBlock\"]")).size());        
+        TestCaseAssert.assertEquals("create New User", 1, driver.findElements(By.xpath("//div[@class=\"justRegisteredBlock\"]")).size());        
     }  
 
     //Test ID 5
@@ -186,14 +185,14 @@ public class WebSiteTest {
     public void navigationLoginPageTest() {   
         Navigation navigation = new Navigation(driver);
         navigation.setNavigation(new String[] {"Register", "Login"});
-        assertEquals("Login Page", driver.getTitle());        
+        TestCaseAssert.assertEquals("Navigation to 'Login Page' page", "Login Page", driver.getTitle());        
     }
 
     //Test ID 6
     @Test
     public void validationLoginFormTest() {   
         Navigation navigation = new Navigation(driver);
-        assertEquals("Login Page", driver.getTitle());      
+        TestCaseAssert.assertEquals("Navigation to 'Login Page' page", "Login Page", driver.getTitle());      
     }
 
     //Test ID 7
@@ -202,7 +201,7 @@ public class WebSiteTest {
         Navigation navigation = new Navigation(driver);
         assertEquals("Login Page", driver.getTitle()); 
         driver.findElement(By.name("submit")).click();
-        assertEquals(1, driver.findElements(By.xpath("//div[@class=\"errorblock\"]")).size());         
+        TestCaseAssert.assertEquals("empty fields login", 1, driver.findElements(By.xpath("//div[@class=\"errorblock\"]")).size());         
     }
     
     //Test ID 8
@@ -212,10 +211,10 @@ public class WebSiteTest {
         assertEquals("Login Page", driver.getTitle()); 
         
         OperationForm operationForm = new OperationForm(driver); 
-        assertFalse(operationForm.loginToServer("f", 
+        TestCaseAssert.assertFalse("incorrect fields login AlS_003/Alexander_1", operationForm.loginToServer("f", 
           new String[] {"j_username", "j_password"}, 
           new String[] {"AlS_003", "Alexander_1"}));   
-        assertFalse(operationForm.loginToServer("f", 
+        TestCaseAssert.assertFalse("incorrect fields login AlS_03/Alexander_2", operationForm.loginToServer("f", 
           new String[] {"j_username", "j_password"}, 
           new String[] {"AlS_03", "Alexander_2"}));
     }   
@@ -227,11 +226,11 @@ public class WebSiteTest {
         assertEquals("Login Page", driver.getTitle()); 
         
         OperationForm operationForm = new OperationForm(driver); 
-        assertTrue(operationForm.loginToServer("f", 
+        TestCaseAssert.assertTrue("login AlS_03/Alexander_1", operationForm.loginToServer("f", 
           new String[] {"j_username", "j_password"}, 
           new String[] {"AlS_03", "Alexander_1"}));
     }
-*/ 
+
 /*
     //Test ID 10
     @Test
@@ -247,7 +246,7 @@ public class WebSiteTest {
           
         navigation.setNavigation(new String[] {"Inventory"});
         
-        String MyObjects[] = {"country", "city", "building", "floor", "room", "rack"};
+        String MyObjects[] = {"country", "city", "building", "floor", "room","rack"};
         
         HashMap<String, String[][]> createObjects = new HashMap<String, String[][]>();
         
@@ -269,6 +268,9 @@ public class WebSiteTest {
         createObjects.put("rack", 
             new String[][] {{"j_idt31:name", "j_idt31:width", "j_idt31:length", "j_idt31:height", "j_idt31:physicalStatus"} ,   
                             {"[sudarenko_alexander]rack", "1", "1", "1", "Planned"}} );
+        createObjects.put("device", 
+            new String[][] {{"j_idt31:name", "j_idt31:macAddress", "j_idt31:ram", "j_idt31:cpu", "j_idt31:ipAddress"} ,   
+                            {"[sudarenko_alexander]device", "1", "1", "1", "Planned"}} );
         
         for (int i = 0; i < 6; i++){
             navigation.setNavigation(new String[] {"Create " + MyObjects[i]});
@@ -282,6 +284,39 @@ public class WebSiteTest {
             }
         }
         
+        navigation.setNavigation(new String[] {"[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack"});
+        navigation.setNavigation(new String[] {"Pos Terminal (s)", "Create Post Terminal"});
+        operationForm.setInput("j_idt31", new String[] {"j_idt31:name", "j_idt31:width", "j_idt31:length", "j_idt31:height", "j_idt31:physicalStatus"}
+                , new String[] {"[sudarenko_alexander]Post Terminal", "1", "1", "1", "Planned"});
+            
+            
+        String originalWindow = driver.getWindowHandle();
+        final Set<String> oldWindowsSet = driver.getWindowHandles();
+ 
+        driver.findElement(By.linkText("select")).click();
+ 
+        String newWindow = (new WebDriverWait(driver, 10))
+            .until(new ExpectedCondition<String>() {
+                public String apply(WebDriver driver) {
+                    Set<String> newWindowsSet = driver.getWindowHandles();
+                    newWindowsSet.removeAll(oldWindowsSet);
+                    return newWindowsSet.size() > 0 ? 
+                                 newWindowsSet.iterator().next() : null;
+                  }
+                }
+            );
+ 
+        driver.switchTo().window(newWindow);
+        
+        navigation.setNavigation(new String[] {"Country: [sudarenko_alexander]country"});
+        driver.findElement(By.id("OK")).click();
+        
+        //System.out.println("New window title: " + driver.getTitle());
+        //driver.close();
+ 
+        driver.switchTo().window(originalWindow);
+        System.out.println("Old window title: " + driver.getTitle());
+        driver.findElement(By.name("j_idt31:j_idt33")).click();
     }*/
 
     @After

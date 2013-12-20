@@ -33,7 +33,7 @@ public class MarshallerToXML {
         // Transform
         transformer.transform(source, result);
         
-        jc.generateSchema(new SchemaOutputResolver() {
+        /*jc.generateSchema(new SchemaOutputResolver() {
  
             @Override
             public Result createOutput(String namespaceURI, String suggestedFileName)
@@ -43,7 +43,7 @@ public class MarshallerToXML {
                 return result;
             }
              
-        });
+        });*/
         
             
     }

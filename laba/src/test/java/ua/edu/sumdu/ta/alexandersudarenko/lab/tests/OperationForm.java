@@ -2,7 +2,8 @@ package ua.edu.sumdu.ta.alexandersudarenko.lab.tests;
 
 import java.io.File;
 import java.io.IOException;
- 
+
+import java.util.Set; 
 import java.util.List; 
 import java.util.Map;
 import java.util.HashMap;
@@ -35,7 +36,30 @@ public class OperationForm {
     public WebElement setInput(String formName, String fieldName, String value) {
 		WebElement inputElement = driver.findElement(By.xpath("//*[@name=\"" + 
           formName + "\"]//*[@name=\"" + fieldName + "\"]"));
-        if (inputElement.getTagName().equals("select")){
+        if (inputElement.getAttribute("readonly") != null) {
+            String originalWindow = driver.getWindowHandle();
+            final Set<String> oldWindowsSet = driver.getWindowHandles();
+            
+            WebElement select = driver.findElement(By.xpath("//*[@id=\"" + formName + "\"]//*[@id=\"" + fieldName + "\"]/parent::td/a"));
+            select.click();
+            //driver.findElement(By.linkText("select")).click();
+     
+            String newWindow = (new WebDriverWait(driver, 10))
+                .until(new ExpectedCondition<String>() {
+                    public String apply(WebDriver driver) {
+                        Set<String> newWindowsSet = driver.getWindowHandles();
+                        newWindowsSet.removeAll(oldWindowsSet);
+                        return newWindowsSet.size() > 0 ? 
+                                     newWindowsSet.iterator().next() : null;
+                      }
+                    }
+                );
+            driver.switchTo().window(newWindow);
+            Navigation navigation = new Navigation(driver);
+            navigation.setNavigation(new String[] {value});
+            driver.findElement(By.id("OK")).click();     
+            driver.switchTo().window(originalWindow);            
+        } else if (inputElement.getTagName().equals("select")){
             Select realSelect = new Select(inputElement);
             realSelect.selectByValue(value);
         } else {
@@ -71,7 +95,8 @@ public class OperationForm {
     public boolean loginToServer(String formName, String[] fieldName, String[] value) {
         setInput(formName, fieldName, value);
         driver.findElement(By.name("submit")).click();
-        if (driver.findElements(By.xpath("//div[@class=\"errorblock\"]")).size() > 0) return false;
+        if (!driver.getTitle().equals("Top")) return false;
+        //if (driver.findElements(By.xpath("//div[@class=\"errorblock\"]")).size() > 0) return false;
         return true;
     }
     

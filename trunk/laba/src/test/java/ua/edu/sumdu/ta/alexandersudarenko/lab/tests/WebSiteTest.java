@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 import org.apache.commons.io.FileUtils;
 
@@ -40,7 +41,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-
+@RunWith(OrderedTestRunner.class)
 public class WebSiteTest {
     private static ChromeDriverService service;
     public static WebDriver driver;
@@ -100,6 +101,7 @@ public class WebSiteTest {
     
     //Test ID 1
     @Test
+    @Order(1)
     public void navigationRegisterPageTest() {   
         Navigation navigation = new Navigation(driver);
         navigation.setNavigation(new String[] {"Register"});
@@ -108,14 +110,15 @@ public class WebSiteTest {
 
     //Test ID 2
     @Test
+    @Order(2)
     public void emptyFieldsRegisterTest() {
         Navigation navigation = new Navigation(driver);
         navigation.setNavigation(new String[] {"Register"});
         assertEquals("Registration", driver.getTitle());
         driver.findElement(By.name("registerForm:j_idt27")).click();
-        TestCaseAssert.assertEquals("Popytka registracii s pustymi poljami", 4, driver.findElements(By.cssSelector(".error")).size());        
+        TestCaseAssert.assertEquals("Popytka registracii s pustymi poljami", 4, driver.findElements(By.cssSelector(".error")).size());
     }    
-
+/*
     //Test ID 3
     @Test
     public void validationRegisterFormTest() {
@@ -158,9 +161,10 @@ public class WebSiteTest {
         TestCaseAssert.assertFalse("validation email alexander@nc", operationForm.validInput("registerForm", "registerForm:email", "alexander@nc"));
         TestCaseAssert.assertFalse("validation email alexander@nc.COM", operationForm.validInput("registerForm", "registerForm:email", "alexander@nc.COM"));
     }
-
+*/
     //Test ID 4
     @Test
+    @Order(1)
     public void createNewUserTest() {
         DateFormat df = new SimpleDateFormat("ddMMyyyy_HHmmss");
         Date today = Calendar.getInstance().getTime();        
@@ -179,7 +183,7 @@ public class WebSiteTest {
         
         TestCaseAssert.assertEquals("create New User", 1, driver.findElements(By.xpath("//div[@class=\"justRegisteredBlock\"]")).size());        
     }  
-
+/*
     //Test ID 5
     @Test
     public void navigationLoginPageTest() {   
@@ -230,7 +234,7 @@ public class WebSiteTest {
           new String[] {"j_username", "j_password"}, 
           new String[] {"AlS_03", "Alexander_1"}));
     }
-
+*/
 /*
     //Test ID 10
     @Test

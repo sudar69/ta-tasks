@@ -54,6 +54,15 @@
    </head>
    <body>
     <h2>Test results</h2>
+    <h4>
+     <xsl:value-of select="testCaseList/timeInfo" />
+    </h4>
+    <h4>
+     Testov vupolneno - <xsl:value-of select="testCaseList/size" />
+    </h4>
+    <h4>
+     Proverok vupolneno - <xsl:value-of select="testCaseList/checksize" />
+    </h4>
     <table class="table hovered">
      <xsl:for-each select="testCaseList/ListMessage/entry">
       <tr>

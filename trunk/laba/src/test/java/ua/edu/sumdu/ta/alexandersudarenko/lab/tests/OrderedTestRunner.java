@@ -1,18 +1,3 @@
-  /**
-   * Copyright 2012 Terremark Worldwide Inc.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   *     http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
   package ua.edu.sumdu.ta.alexandersudarenko.lab.tests;
   
   import java.util.ArrayList;
@@ -24,30 +9,14 @@
   import org.junit.runners.model.FrameworkMethod;
   import org.junit.runners.model.InitializationError;
   
-  //import ua.edu.sumdu.ta.alexandersudarenko.lab.Order;
-  
-  /**
-   * Extension of JUnit's runner to support running test methods in a specific order.
-   *
-   * @author <a href="mailto:spasam@terremark.com">Seshu Pasam</a>
-   */
+
   public class OrderedTestRunner extends BlockJUnit4ClassRunner {
-      /**
-       * Default constructor.
-       *
-       * @param klass Test class
-       * @throws InitializationError If the test class is malformed.
-       */
+
       public OrderedTestRunner(final Class<?> klass) throws InitializationError {
           super(klass);
       }
   
-      /**
-       * Check if the test methods are annotated with {@link com.terremark.annotations.Order} annotation. The order value
-       * is used to identify/sort the test methods. Returns the ordered test methods.
-       *
-       * @see org.junit.runners.BlockJUnit4ClassRunner#computeTestMethods()
-       */
+
       @Override
       protected List<FrameworkMethod> computeTestMethods() {
           final List<FrameworkMethod> methods = super.computeTestMethods();

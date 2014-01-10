@@ -63,7 +63,7 @@ public class WebSiteTest {
     @Before
     public void setUp(){
         driver = new ChromeDriver(service);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         driver.get("http://s1.web.sumdu.edu.ua");
     }
@@ -120,7 +120,12 @@ public class WebSiteTest {
         WebElement checkBox = driver.findElement(By.xpath("//*[@class=\"objects\"]//a[text()=\"" + name + "\"]/parent::td/input[@type=\"checkbox\"]"));
         if(!checkBox.isSelected()){
             checkBox.click();
-            driver.findElement(By.xpath("//input[@type=\"submit\" and @value=\"Delete\"]")).click();
+            driver.findElement(By.xpath("//div[contains(@aria-hidden,'false')]//div[@class=\"table_content\"]//input[@type=\"submit\" and @value=\"Delete\"]")).click();
+        }
+        if (driver.findElements(By.xpath("//*[@class=\"objects\"]//a[text()=\"" + name + "\"]")).size() == 0) {
+            TestCaseAssert.assertTrue("Remove object '" + name + "'", true);
+        } else {
+            TestCaseAssert.assertTrue("Remove object '" + name + "'", false);
         }
     }
     
@@ -520,14 +525,14 @@ public class WebSiteTest {
         OperationForm operationForm = new OperationForm(driver); 
         assertTrue(loginToServer(operationForm));
           
-        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pos Terminal (s)", "Create "});
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pos Terminal (s)", "Create"});
         operationForm.setInput("j_idt31", 
           new String[] {"j_idt31:name", "j_idt31:width", "j_idt31:length", "j_idt31:height", "j_idt31:physicalStatus", "j_idt31:locatedIn"}, 
           new String[] {"[sudarenko_alexander]Post Terminal2", "1", "1", "1", "Planned", "Country: [sudarenko_alexander]country"});
         driver.findElement(By.name("j_idt31:j_idt33")).click();
         TestCaseAssert.assertEquals("--", "[sudarenko_alexander]Post Terminal2", driver.getTitle());
     }
-    
+   
     @Test
     @Order(8)
     public void createPostTerminalTest3() { 
@@ -668,7 +673,7 @@ public class WebSiteTest {
 
     //Test ID 28
     @Test
-    @Order(4)
+    @Order(3)
     public void valueCountryTest() { 
         Navigation navigation = new Navigation(driver);
         assertEquals("Login Page", driver.getTitle()); 
@@ -680,9 +685,594 @@ public class WebSiteTest {
         validParameters(new String[] {"Name", "Continent", "Language", "Object Type"}, new String[] {"[sudarenko_alexander]country", "Europa2", "English2", "Country"});
     }
 
-    //Test ID 49-50
+    //Test ID 29
+    @Test
+    @Order(4)
+    public void valueCityTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "Parameters", "Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:name", "j_idt36:population", "j_idt36:isRegionalCenter"}, new String[] {"[sudarenko_alexander]city", "10002", "No"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]city", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Population", "Is a regional center", "Object Type"}, new String[] {"[sudarenko_alexander]city", "10002", "No", "City"});
+    }
+    
+    //Test ID 30
+    @Test
+    @Order(5)
+    public void valueBuildingTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Parameters", "Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:name", "j_idt36:streetName", "j_idt36:number", "j_idt36:square", "j_idt36:isconnected"}, 
+          new String[] {"[sudarenko_alexander]building", "mystreet2", "2", "2.0", "Unlit"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Street Name", "Number", "Square", "Is connected", "Object Type"}, new String[] {"[sudarenko_alexander]building", "mystreet2", "2", "2.0", "Unlit", "Building"});
+    }
+    
+    //Test ID 31
+    @Test
+    @Order(6)
+    public void valueFloorTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Parameters", "Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:name", "j_idt36:number", "j_idt36:square"}, new String[] {"[sudarenko_alexander]floor", "2", "2.0"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "Floor#2", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Number", "Square", "Object Type"}, new String[] {"Floor#2", "2", "2.0", "Floor"});
+        
+        navigation.setNavigation(new String[] {"Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:number"}, new String[] {"1"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+    }
+    
+    //Test ID 32
+    @Test
+    @Order(7)
+    public void valueRoomTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "Parameters", "Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:name", "j_idt36:square"}, new String[] {"[sudarenko_alexander]room", "2.0"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]room", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Square", "Object Type"}, new String[] {"[sudarenko_alexander]room", "2.0", "Room"});
+    }
+    
+    //Test ID 33
+    @Test
+    @Order(8)
+    public void valueRackTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "Parameters", "Edit"});
+        operationForm.setInput("j_idt36", new String[] {"j_idt36:name", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:physicalStatus"}, new String[] {"[sudarenko_alexander]rack", "2", "2", "2", "In Service"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]rack", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Width", "Length", "Height", "Physical Status", "Object Type"}, new String[] {"[sudarenko_alexander]rack", "2", "2", "2", "In Service", "Rack"});
+    }
+    
+    //ram
+    //Test ID 34
     @Test
     @Order(9)
+    public void valueDeviceTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "[sudarenko_alexander]device", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:macAddress", "j_idt36:ram", "j_idt36:cpu", "j_idt36:ipAddress", "j_idt36:physicalStatus", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:locatedIn", "j_idt36:networkElementName"}, 
+          new String[] {"[sudarenko_alexander]device", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]device", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "MAC Address", "RAM(Gb) (Gb)", "CPU", "IP Address", "Physical Status", "Width", "Length", "Height", "Is located in", "Is connected to Network Element", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]device", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country", "Device"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valueDeviceTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Devices", "[sudarenko_alexander]device2", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:macAddress", "j_idt36:ram", "j_idt36:cpu", "j_idt36:ipAddress", "j_idt36:physicalStatus", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:locatedIn", "j_idt36:networkElementName"}, 
+          new String[] {"[sudarenko_alexander]device2", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]device2", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "MAC Address", "RAM(Gb) (Gb)", "CPU", "IP Address", "Physical Status", "Width", "Length", "Height", "Is located in", "Is connected to Network Element", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]device2", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country", "Device"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valueDeviceTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Devices", "[sudarenko_alexander]device3", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:macAddress", "j_idt36:ram", "j_idt36:cpu", "j_idt36:ipAddress", "j_idt36:physicalStatus", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:locatedIn", "j_idt36:networkElementName"}, 
+          new String[] {"[sudarenko_alexander]device3", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]device3", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "MAC Address", "RAM(Gb) (Gb)", "CPU", "IP Address", "Physical Status", "Width", "Length", "Height", "Is located in", "Is connected to Network Element", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]device3", "22:22:22:22:22:22", "2", "2", "127.0.0.2", "In Service", "2", "2", "2", "Country: [sudarenko_alexander]country", "Country: [sudarenko_alexander]country", "Device"});
+    }
+    
+    //Test ID 35
+    @Test
+    @Order(9)
+    public void valuePostTerminalTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "Pos Terminal (s)", "[sudarenko_alexander]Post Terminal", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Post Terminal", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Width", "Length", "Height", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "POS Term"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valuePostTerminalTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pos Terminal (s)", "[sudarenko_alexander]Post Terminal2", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal2", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Post Terminal2", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Width", "Length", "Height", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal2", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "POS Term"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valuePostTerminalTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Pos Terminal (s)", "[sudarenko_alexander]Post Terminal3", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:width", "j_idt36:length", "j_idt36:height", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal3", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Post Terminal3", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Width", "Length", "Height", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Post Terminal3", "2", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "POS Term"});
+    }
+    
+    //Test ID 36
+    @Test
+    @Order(9)
+    public void valuePayBoxTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "Pay Box (s)", "[sudarenko_alexander]Pay Box", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:secureProtocol", "j_idt36:displaySize", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Pay Box", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Pay Box", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Secure Protocol", "Display Size(inches)", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Pay Box", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "Pay Box"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valuePayBoxTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pay Box (s)", "[sudarenko_alexander]Pay Box2", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:secureProtocol", "j_idt36:displaySize", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Pay Box2", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Pay Box2", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Secure Protocol", "Display Size(inches)", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Pay Box2", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "Pay Box"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valuePayBoxTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Pay Box (s)", "[sudarenko_alexander]Pay Box3", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:secureProtocol", "j_idt36:displaySize", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]Pay Box3", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]Pay Box3", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Secure Protocol", "Display Size(inches)", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]Pay Box3", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "Pay Box"});
+    }
+    
+    //Test ID 37
+    @Test
+    @Order(9)
+    public void valueATMTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "ATM (s)", "[sudarenko_alexander]ATM", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:connectionType", "j_idt36:extraSecurity", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]ATM", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]ATM", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Connection Type", "Extra Security", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]ATM", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "ATM"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valueATMTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "ATM (s)", "[sudarenko_alexander]ATM2", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:connectionType", "j_idt36:extraSecurity", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]ATM2", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]ATM2", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Connection Type", "Extra Security", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]ATM2", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "ATM"});
+    }
+    
+    @Test
+    @Order(9)
+    public void valueATMTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+        
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "ATM (s)", "[sudarenko_alexander]ATM3", "Parameters", "Edit"});
+        
+        operationForm.setInput("j_idt36", 
+          new String[] {"j_idt36:name", "j_idt36:connectionType", "j_idt36:extraSecurity", "j_idt36:physicalStatus", "j_idt36:locatedIn"}, 
+          new String[] {"[sudarenko_alexander]ATM3", "2", "2", "In Service", "Country: [sudarenko_alexander]country"});
+        driver.findElement(By.name("j_idt36:j_idt38")).click();
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]ATM3", driver.getTitle());
+        
+        validParameters(new String[] {"Name", "Connection Type", "Extra Security", "Physical Status", "Is located in", "Object Type"}, 
+          new String[] {"[sudarenko_alexander]ATM3", "2", "2", "In Service", "Country: [sudarenko_alexander]country", "ATM"});
+    }
+    
+    //Test ID 38-39
+    @Test
+    @Order(10)
+    public void deleteATMTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "ATM (s)"});
+        deleteObject("[sudarenko_alexander]ATM");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]rack", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deleteATMTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "ATM (s)"});
+        deleteObject("[sudarenko_alexander]ATM2");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deleteATMTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "ATM (s)"});
+        deleteObject("[sudarenko_alexander]ATM3");
+        assertEquals("expected:" + driver.getTitle(), "Floor#1", driver.getTitle());
+    }
+    
+    //Test ID 40
+    @Test
+    @Order(10)
+    public void deletePayBoxTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "Pay Box (s)"});
+        deleteObject("[sudarenko_alexander]Pay Box");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]rack", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deletePayBoxTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pay Box (s)"});
+        deleteObject("[sudarenko_alexander]Pay Box2");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deletePayBoxTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Pay Box (s)"});
+        deleteObject("[sudarenko_alexander]Pay Box3");
+        assertEquals("expected:" + driver.getTitle(), "Floor#1", driver.getTitle());
+    }
+    
+    //Test ID 41
+    @Test
+    @Order(10)
+    public void deletePostTerminalTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack", "Pos Terminal (s)"});
+        deleteObject("[sudarenko_alexander]Post Terminal");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]rack", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deletePostTerminalTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Pos Terminal (s)"});
+        deleteObject("[sudarenko_alexander]Post Terminal2");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deletePostTerminalTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Pos Terminal (s)"});
+        deleteObject("[sudarenko_alexander]Post Terminal3");
+        assertEquals("expected:" + driver.getTitle(), "Floor#1", driver.getTitle());
+    }
+    
+    //Test ID 42
+    @Test
+    @Order(10)
+    public void deleteDeviceTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room", "[sudarenko_alexander]rack"});
+        deleteObject("[sudarenko_alexander]device");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]rack", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deleteDeviceTest2() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Devices"});
+        deleteObject("[sudarenko_alexander]device2");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+    }
+    
+    @Test
+    @Order(10)
+    public void deleteDeviceTest3() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "Devices"});
+        deleteObject("[sudarenko_alexander]device3");
+        assertEquals("expected:" + driver.getTitle(), "Floor#1", driver.getTitle());
+    }
+    
+    //Test ID 43
+    @Test
+    @Order(11)
+    public void deleteRackTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1", "[sudarenko_alexander]room"});
+        deleteObject("[sudarenko_alexander]rack");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]room", driver.getTitle());
+    }
+    
+    //Test ID 44
+    @Test
+    @Order(12)
+    public void deleteRoomTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building", "Floor#1"});
+        deleteObject("[sudarenko_alexander]room");
+        assertEquals("expected:" + driver.getTitle(), "Floor#1", driver.getTitle());
+    }
+    
+    //Test ID 45
+    @Test
+    @Order(13)
+    public void deleteFloorTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country", "[sudarenko_alexander]city", "[sudarenko_alexander]building"});
+        deleteObject("Floor#1");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]building", driver.getTitle());
+    }
+    
+    //Test ID 46 - 47
+    @Test
+    @Order(14)
+    public void deleteCityTest() { 
+        Navigation navigation = new Navigation(driver);
+        assertEquals("Login Page", driver.getTitle()); 
+        
+        OperationForm operationForm = new OperationForm(driver); 
+        assertTrue(loginToServer(operationForm));
+          
+        navigation.setNavigation(new String[] {"Inventory", "[sudarenko_alexander]country"});
+        deleteObject("[sudarenko_alexander]city");
+        assertEquals("expected:" + driver.getTitle(), "[sudarenko_alexander]country", driver.getTitle());
+    }
+    
+   
+    //Test ID 48-50
+    @Test
+    @Order(15)
     public void deleteCountryTest() { 
         Navigation navigation = new Navigation(driver);
         assertEquals("Login Page", driver.getTitle()); 
@@ -692,7 +1282,7 @@ public class WebSiteTest {
           
         navigation.setNavigation(new String[] {"Inventory"});
         deleteObject("[sudarenko_alexander]country");
-        
+        assertEquals("expected:" + driver.getTitle(), "Inventory", driver.getTitle());
     }
     
     @After

@@ -12,12 +12,6 @@ import java.io.IOException;
 public class MarshallerToXML {
 
     public static void marshaller(TestCaseList testCaseList) throws Exception {
-            /*JAXBContext jaxbContext = JAXBContext.newInstance(TestCaseList.class, ListMessage.class, TestMessage.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            jaxbMarshaller.marshal(testCaseList, System.out);*/
-            
         // Create Transformer
         TransformerFactory tf = TransformerFactory.newInstance();
         StreamSource xslt = new StreamSource("stylesheet.xsl");
@@ -32,19 +26,5 @@ public class MarshallerToXML {
          
         // Transform
         transformer.transform(source, result);
-        
-        /*jc.generateSchema(new SchemaOutputResolver() {
- 
-            @Override
-            public Result createOutput(String namespaceURI, String suggestedFileName)
-                    throws IOException {
-                StreamResult result = new StreamResult(System.out);
-                result.setSystemId(suggestedFileName);
-                return result;
-            }
-             
-        });*/
-        
-            
     }
 }
